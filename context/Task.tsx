@@ -24,7 +24,7 @@ export function TasksProvider({ children }: { children: ReactNode }) {
       text,
       completed: false,
     };
-    setTasks((prev) => [...prev, newTask]);
+    setTasks((prev) => [newTask, ...prev]);
   };
 
   const toggleTask = (id: string) => {
