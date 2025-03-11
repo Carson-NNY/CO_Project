@@ -11,114 +11,129 @@ import React, { useState } from "react";
 import { HelloWave } from "@/components/HelloWave";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { useTasks } from "@/context/Task";
+import Tasks, { Task } from "@/components/Task";
 
 export default function HomeScreen() {
-  const { addTask, tasks, toggleTask, deleteTask } = useTasks();
-  const [input, setInput] = useState("");
-  const today = new Date().toISOString().split("T")[0];
-  const [statusChanged, setStatusChanged] = useState("");
-
-  const handleCompleteTask = (id) => {
-    const task = tasks.find((t) => t.id === id);
-    toggleTask(id);
-    if (!task?.completed) {
-      setStatusChanged("🎉 Task completed successfully!");
-      setTimeout(() => {
-        setStatusChanged("");
-      }, 2000);
-    }
-  };
-
-  const handleAddTask = () => {
-    if (input.trim()) {
-      addTask(input);
-      setInput("");
-      setStatusChanged("Task added successfully!");
-      setTimeout(() => {
-        setStatusChanged("");
-      }, 2000);
-    }
-  };
-
-  const handleDeleteTask = (id) => {
-    deleteTask(id);
-    setStatusChanged("Task deleted successfully!");
-    setTimeout(() => {
-      setStatusChanged("");
-    }, 2000);
-  };
-
-  const HeaderComponent = () => (
-    <View style={styles.headerWrapper}>
-      <Image
-        source={require("@/assets/images/home_banner.png")}
-        style={styles.home_banner}
-      />
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">ListEase</ThemedText>
-        <HelloWave />
-      </ThemedView>
-    </View>
-  );
-
   return (
-    <>
-      <FlatList
-        data={tasks.filter((task) => task.date === today)} // Only show today's tasks
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContainer}
-        ListHeaderComponent={HeaderComponent}
-        renderItem={({ item }) => (
-          <View
-            style={[
-              styles.taskContainer,
-              item.completed && styles.completedContainer,
-            ]}
-          >
-            <TouchableOpacity
-              style={styles.checkmarkContainer}
-              onPress={() => handleCompleteTask(item.id)}
-            >
-              <Text style={styles.checkmark}>{item.completed ? "✓" : "○"}</Text>
-            </TouchableOpacity>
-            <ThemedText
-              style={[styles.taskText, item.completed && styles.completedTask]}
-            >
-              {item.text}
-            </ThemedText>
+    <Tasks>
+      {({ tasks, addTask, toggleTask, deleteTask }) => {
+        const [input, setInput] = useState("");
+        const [statusChanged, setStatusChanged] = useState("");
+        const today = new Date().toISOString().split("T")[0];
 
-            <Text style={styles.taskDate}>{item.date}</Text>
+        const handleAddTask = () => {
+          if (input.trim()) {
+            addTask(input);
+            setInput("");
+            setStatusChanged("Task added successfully!");
+            setTimeout(() => {
+              setStatusChanged("");
+            }, 2000);
+          }
+        };
 
-            <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={() => handleDeleteTask(item.id)}
-            >
-              <Text style={styles.deleteButtonText}>X</Text>
-            </TouchableOpacity>
+        const handleCompleteTask = (id: string) => {
+          const task = tasks.find((t) => t.id === id);
+          toggleTask(id);
+          if (!task?.completed) {
+            setStatusChanged("🎉 Task completed successfully!");
+          }
+          setTimeout(() => {
+            setStatusChanged("");
+          }, 2000);
+        };
+
+        const handleDeleteTask = (id: string) => {
+          deleteTask(id);
+          setStatusChanged("Task deleted successfully!");
+          setTimeout(() => {
+            setStatusChanged("");
+          }, 2000);
+        };
+
+        const HeaderComponent = () => (
+          <View style={styles.headerWrapper}>
+            <Image
+              source={require("@/assets/images/home_banner.png")}
+              style={styles.home_banner}
+            />
+            <ThemedView style={styles.titleContainer}>
+              <ThemedText type="title">ListEase</ThemedText>
+              <HelloWave />
+            </ThemedView>
           </View>
-        )}
-      />
-      {/* dynamically notify user if the action is exeuted successfully */}
-      {statusChanged ? (
-        <ThemedView style={styles.statusChangedContainer}>
-          <Text style={styles.statusChangedText}>{statusChanged}</Text>
-        </ThemedView>
-      ) : null}
-      <ThemedView style={styles.taskInputContainer}>
-        <TouchableOpacity onPress={handleAddTask} style={styles.addButton}>
-          <Text style={styles.addButtonText}>+</Text>
-        </TouchableOpacity>
-        <TextInput
-          style={styles.input}
-          placeholder="Add a new task"
-          placeholderTextColor="#aaa"
-          value={input}
-          onChangeText={setInput}
-          maxLength={40}
-        />
-      </ThemedView>
-    </>
+        );
+
+        return (
+          <>
+            <FlatList
+              data={tasks.filter((task: Task) => task.date === today)} // Only show today's tasks
+              keyExtractor={(item: Task) => item.id}
+              contentContainerStyle={styles.listContainer}
+              ListHeaderComponent={HeaderComponent}
+              renderItem={({ item }: { item: Task }) => (
+                <View
+                  style={[
+                    styles.taskContainer,
+                    item.completed && styles.completedContainer,
+                  ]}
+                >
+                  <TouchableOpacity
+                    style={styles.checkmarkContainer}
+                    onPress={() => handleCompleteTask(item.id)}
+                  >
+                    <Text style={styles.checkmark}>
+                      {item.completed ? "✓" : "○"}
+                    </Text>
+                  </TouchableOpacity>
+
+                  <View style={styles.taskTextContainer}>
+                    <ThemedText
+                      style={[
+                        styles.taskText,
+                        item.completed && styles.completedTask,
+                      ]}
+                    >
+                      {item.text}
+                    </ThemedText>
+                    <Text style={styles.taskDate}>{item.date}</Text>
+                  </View>
+
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => handleDeleteTask(item.id)}
+                  >
+                    <Text style={styles.deleteButtonText}>X</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
+            {/* Notification for status changes */}
+            {statusChanged ? (
+              <ThemedView style={styles.statusChangedContainer}>
+                <Text style={styles.statusChangedText}>{statusChanged}</Text>
+              </ThemedView>
+            ) : null}
+            <ThemedView style={styles.taskInputContainer}>
+              <TouchableOpacity
+                onPress={handleAddTask}
+                style={styles.addButton}
+              >
+                <Text style={styles.addButtonText}>+</Text>
+              </TouchableOpacity>
+              <TextInput
+                style={styles.input}
+                placeholder="Add a new task"
+                placeholderTextColor="#aaa"
+                value={input}
+                onChangeText={setInput}
+                maxLength={40}
+              />
+            </ThemedView>
+          </>
+        );
+      }}
+    </Tasks>
   );
 }
 
@@ -167,6 +182,11 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: "#333",
+  },
+  taskTextContainer: {
+    flex: 1,
+    flexDirection: "column",
+    alignItems: "flex-start",
   },
   completedTask: {
     textDecorationLine: "line-through",

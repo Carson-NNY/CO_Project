@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, ReactNode } from "react";
+import React, { useState, ReactNode } from "react";
 
 export interface Task {
   id: string;
@@ -7,20 +7,22 @@ export interface Task {
   date: string;
 }
 
-interface TasksContextType {
+interface Tasks {
   tasks: Task[];
   addTask: (text: string) => void;
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
 }
 
-const TasksContext = createContext<TasksContextType | undefined>(undefined);
+interface TasksProps {
+  children: (context: Tasks) => ReactNode;
+}
 
-export function TasksProvider({ children }: { children: ReactNode }) {
+export default function Tasks({ children }: TasksProps) {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const today = new Date().toISOString().split("T")[0];
 
   const addTask = (text: string) => {
-    const today = new Date().toISOString().split("T")[0];
     const newTask: Task = {
       id: Date.now().toString(),
       text,
@@ -42,17 +44,5 @@ export function TasksProvider({ children }: { children: ReactNode }) {
     setTasks((prev) => prev.filter((task) => task.id !== id));
   };
 
-  return (
-    <TasksContext.Provider value={{ tasks, addTask, toggleTask, deleteTask }}>
-      {children}
-    </TasksContext.Provider>
-  );
-}
-
-export function useTasks() {
-  const context = useContext(TasksContext);
-  if (!context) {
-    throw new Error("useTasks must be used within a TasksProvider");
-  }
-  return context;
+  return <>{children({ tasks, addTask, toggleTask, deleteTask })}</>;
 }
