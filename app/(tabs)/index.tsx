@@ -16,12 +16,37 @@ import { useTasks } from "@/context/Task";
 export default function HomeScreen() {
   const { addTask, tasks, toggleTask, deleteTask } = useTasks();
   const [input, setInput] = useState("");
+  const today = new Date().toISOString().split("T")[0];
+  const [statusChanged, setStatusChanged] = useState("");
+
+  const handleCompleteTask = (id) => {
+    const task = tasks.find((t) => t.id === id);
+    toggleTask(id);
+    if (!task?.completed) {
+      setStatusChanged("🎉 Task completed successfully!");
+      setTimeout(() => {
+        setStatusChanged("");
+      }, 2000);
+    }
+  };
 
   const handleAddTask = () => {
     if (input.trim()) {
       addTask(input);
       setInput("");
+      setStatusChanged("Task added successfully!");
+      setTimeout(() => {
+        setStatusChanged("");
+      }, 2000);
     }
+  };
+
+  const handleDeleteTask = (id) => {
+    deleteTask(id);
+    setStatusChanged("Task deleted successfully!");
+    setTimeout(() => {
+      setStatusChanged("");
+    }, 2000);
   };
 
   const HeaderComponent = () => (
@@ -40,7 +65,7 @@ export default function HomeScreen() {
   return (
     <>
       <FlatList
-        data={tasks}
+        data={tasks.filter((task) => task.date === today)} // Only show today's tasks
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContainer}
         ListHeaderComponent={HeaderComponent}
@@ -53,7 +78,7 @@ export default function HomeScreen() {
           >
             <TouchableOpacity
               style={styles.checkmarkContainer}
-              onPress={() => toggleTask(item.id)}
+              onPress={() => handleCompleteTask(item.id)}
             >
               <Text style={styles.checkmark}>{item.completed ? "✓" : "○"}</Text>
             </TouchableOpacity>
@@ -62,15 +87,24 @@ export default function HomeScreen() {
             >
               {item.text}
             </ThemedText>
+
+            <Text style={styles.taskDate}>{item.date}</Text>
+
             <TouchableOpacity
               style={styles.deleteButton}
-              onPress={() => deleteTask(item.id)}
+              onPress={() => handleDeleteTask(item.id)}
             >
               <Text style={styles.deleteButtonText}>X</Text>
             </TouchableOpacity>
           </View>
         )}
       />
+      {/* dynamically notify user if the action is exeuted successfully */}
+      {statusChanged ? (
+        <ThemedView style={styles.statusChangedContainer}>
+          <Text style={styles.statusChangedText}>{statusChanged}</Text>
+        </ThemedView>
+      ) : null}
       <ThemedView style={styles.taskInputContainer}>
         <TouchableOpacity onPress={handleAddTask} style={styles.addButton}>
           <Text style={styles.addButtonText}>+</Text>
@@ -81,6 +115,7 @@ export default function HomeScreen() {
           placeholderTextColor="#aaa"
           value={input}
           onChangeText={setInput}
+          maxLength={40}
         />
       </ThemedView>
     </>
@@ -171,5 +206,22 @@ const styles = StyleSheet.create({
   addButtonText: {
     fontSize: 24,
     color: "#fff",
+  },
+  taskDate: {
+    fontSize: 12,
+    color: "#aaa",
+    marginTop: 2,
+    textAlign: "right",
+  },
+  statusChangedContainer: {
+    backgroundColor: "#4CAF50",
+    borderRadius: 8,
+    padding: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  statusChangedText: {
+    color: "#fff",
+    fontSize: 14,
   },
 });

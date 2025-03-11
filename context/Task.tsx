@@ -4,6 +4,7 @@ export interface Task {
   id: string;
   text: string;
   completed: boolean;
+  date: string;
 }
 
 interface TasksContextType {
@@ -19,10 +20,12 @@ export function TasksProvider({ children }: { children: ReactNode }) {
   const [tasks, setTasks] = useState<Task[]>([]);
 
   const addTask = (text: string) => {
+    const today = new Date().toISOString().split("T")[0];
     const newTask: Task = {
       id: Date.now().toString(),
       text,
       completed: false,
+      date: today,
     };
     setTasks((prev) => [newTask, ...prev]);
   };

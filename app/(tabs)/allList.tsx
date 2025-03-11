@@ -17,7 +17,7 @@ export default function TabTwoScreen() {
 
   return (
     <FlatList
-      data={tasks}
+      data={tasks} // show all tasks
       keyExtractor={(item) => item.id}
       contentContainerStyle={styles.listContainer}
       ListHeaderComponent={
@@ -52,6 +52,7 @@ export default function TabTwoScreen() {
           >
             {item.text}
           </ThemedText>
+          <Text style={styles.taskDate}>{item.date}</Text>
           {/* Delete the task */}
           <TouchableOpacity
             style={styles.deleteButton}
@@ -143,5 +144,11 @@ const styles = StyleSheet.create({
   deleteButtonText: {
     color: "#fff",
     fontWeight: "600",
+  },
+  taskDate: {
+    fontSize: 12,
+    color: "#aaa",
+    marginTop: 2,
+    textAlign: "right",
   },
 });
