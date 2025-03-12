@@ -1,155 +1,16 @@
+import React, { useState } from "react";
 import {
-  Image,
-  StyleSheet,
-  TextInput,
   FlatList,
+  TextInput,
   TouchableOpacity,
   View,
   Text,
-  Switch,
+  StyleSheet,
 } from "react-native";
-import React, { useState } from "react";
-import { ThemedText } from "@/components/ThemedText";
+import Tasks from "@/components/Task";
+import TaskItem from "@/components/TaskItem";
+import BannerComponent from "@/components/Banner";
 import { ThemedView } from "@/components/ThemedView";
-import Tasks, { Task } from "@/components/Task";
-import {
-  Gesture,
-  GestureDetector,
-  PanGestureHandlerEventPayload,
-} from "react-native-gesture-handler";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  runOnJS,
-} from "react-native-reanimated";
-
-// Separate TaskItem component for swipe gestures and animations
-const TaskItem: React.FC<{
-  item: Task;
-  handleCompleteTask: (id: string) => void;
-  handleDeleteTask: (id: string) => void;
-}> = ({ item, handleCompleteTask, handleDeleteTask }) => {
-  const translateX = useSharedValue(0);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
-  }));
-
-  // Background label for "Complete"
-  const completeLabelStyle = useAnimatedStyle(() => ({
-    opacity: translateX.value > 0 ? Math.min(translateX.value / 100, 1) : 0,
-  }));
-
-  // Background label for "Delete"
-  const deleteLabelStyle = useAnimatedStyle(() => ({
-    opacity: translateX.value < 0 ? Math.min(-translateX.value / 100, 1) : 0,
-  }));
-
-  const panGesture = Gesture.Pan()
-    .onUpdate((event: PanGestureHandlerEventPayload) => {
-      translateX.value = event.translationX;
-    })
-    .onEnd((event: PanGestureHandlerEventPayload) => {
-      if (event.translationX > 100) {
-        runOnJS(handleCompleteTask)(item.id);
-        translateX.value = withTiming(0);
-      } else if (event.translationX < -100) {
-        runOnJS(handleDeleteTask)(item.id);
-        translateX.value = withTiming(0);
-      } else {
-        translateX.value = withTiming(0);
-      }
-    });
-
-  return (
-    <View style={styles.rowContainer}>
-      {/* Background label for complete action */}
-      <Animated.View
-        style={[
-          styles.backgroundLabel,
-          styles.completeBackground,
-          completeLabelStyle,
-        ]}
-      >
-        <Text style={styles.backgroundLabelText}>
-          {item.completed ? "Reopen" : "Complete"}
-        </Text>
-      </Animated.View>
-      {/* Background label for delete action */}
-      <Animated.View
-        style={[
-          styles.backgroundLabel,
-          styles.deleteBackground,
-          deleteLabelStyle,
-        ]}
-      >
-        <Text style={styles.backgroundLabelText}>Delete</Text>
-      </Animated.View>
-
-      <GestureDetector gesture={panGesture}>
-        <Animated.View
-          style={[
-            styles.taskContainer,
-            animatedStyle,
-            item.completed && styles.completedContainer,
-          ]}
-        >
-          <TouchableOpacity
-            style={styles.checkmarkContainer}
-            onPress={() => handleCompleteTask(item.id)}
-          >
-            <Text style={styles.checkmark}>{item.completed ? "✓" : "○"}</Text>
-          </TouchableOpacity>
-
-          <View style={styles.taskTextContainer}>
-            <ThemedText
-              style={[styles.taskText, item.completed && styles.completedTask]}
-            >
-              {item.text}
-            </ThemedText>
-            <Text style={styles.taskDate}>{item.date}</Text>
-          </View>
-
-          <TouchableOpacity
-            style={styles.deleteButton}
-            onPress={() => handleDeleteTask(item.id)}
-          >
-            <Text style={styles.deleteButtonText}>X</Text>
-          </TouchableOpacity>
-        </Animated.View>
-      </GestureDetector>
-    </View>
-  );
-};
-
-const HeaderComponent: React.FC<{
-  filterUncompleted: boolean;
-  setFilterUncompleted: (val: boolean) => void;
-}> = ({ filterUncompleted, setFilterUncompleted }) => {
-  return (
-    <View style={styles.headerWrapper}>
-      <Image
-        source={require("@/assets/images/home_banner.png")}
-        style={styles.home_banner}
-      />
-      <ThemedView style={styles.titleContainer}>
-        <View style={styles.headerRow}>
-          <ThemedText type="light" style={styles.headerText}>
-            Can also left/right swipe to complete/delete tasks
-          </ThemedText>
-          <View style={styles.switchContainer}>
-            <Text style={styles.switchLabel}>Show Uncompleted Tasks</Text>
-            <Switch
-              value={filterUncompleted}
-              onValueChange={setFilterUncompleted}
-            />
-          </View>
-        </View>
-      </ThemedView>
-    </View>
-  );
-};
 
 export default function HomeScreen() {
   const [input, setInput] = useState("");
@@ -159,8 +20,6 @@ export default function HomeScreen() {
   return (
     <Tasks>
       {({ tasks, addTask, toggleTask, deleteTask }) => {
-        // If filterUncompleted is true, show only tasks that are not completed;
-        // otherwise, show all tasks.
         const displayedTasks = filterUncompleted
           ? tasks.filter((task) => !task.completed)
           : tasks;
@@ -170,38 +29,24 @@ export default function HomeScreen() {
             addTask(input);
             setInput("");
             setStatusChanged("Task added successfully!");
-            setTimeout(() => setStatusChanged(""), 2000);
+            setTimeout(() => setStatusChanged(""), 2000); // Clear message after 2 seconds
           }
-        };
-
-        const handleCompleteTask = (id: string) => {
-          const task = tasks.find((t) => t.id === id);
-          toggleTask(id);
-          if (task && !task.completed) {
-            setStatusChanged("🎉 Task completed successfully!");
-          }
-          setTimeout(() => setStatusChanged(""), 2000);
-        };
-
-        const handleDeleteTask = (id: string) => {
-          deleteTask(id);
-          setStatusChanged("Task deleted successfully!");
-          setTimeout(() => setStatusChanged(""), 2000);
         };
 
         return (
-          <>
+          <View style={styles.container}>
             <FlatList
               data={displayedTasks}
               keyExtractor={(item) => item.id}
               ListHeaderComponent={() => (
-                <HeaderComponent
+                <BannerComponent
                   filterUncompleted={filterUncompleted}
                   setFilterUncompleted={setFilterUncompleted}
                 />
               )}
               ListFooterComponent={() =>
                 displayedTasks.length === 0 ? (
+                  //  only show when there are no tasks
                   <View style={styles.emptyContainer}>
                     <Text style={styles.emptyText}>No tasks at the moment</Text>
                     <Text style={styles.emptySubText}>
@@ -213,18 +58,20 @@ export default function HomeScreen() {
               renderItem={({ item }) => (
                 <TaskItem
                   item={item}
-                  handleCompleteTask={handleCompleteTask}
-                  handleDeleteTask={handleDeleteTask}
+                  handleCompleteTask={toggleTask}
+                  handleDeleteTask={deleteTask}
                 />
               )}
             />
 
+            {/* Status Changed Notification(add/delete/complete tasks) */}
             {statusChanged ? (
               <ThemedView style={styles.statusChangedContainer}>
                 <Text style={styles.statusChangedText}>{statusChanged}</Text>
               </ThemedView>
             ) : null}
 
+            {/* Task Input Box */}
             <ThemedView style={styles.taskInputContainer}>
               <TouchableOpacity
                 onPress={handleAddTask}
@@ -243,7 +90,7 @@ export default function HomeScreen() {
                 onSubmitEditing={handleAddTask}
               />
             </ThemedView>
-          </>
+          </View>
         );
       }}
     </Tasks>
@@ -251,33 +98,9 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  headerWrapper: {
+  container: {
     flex: 1,
-  },
-  home_banner: {
-    height: 258,
-    width: "100%",
-    resizeMode: "cover",
-  },
-  titleContainer: {
-    backgroundColor: "#lightgrey",
-  },
-  headerRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  headerText: {
-    flex: 1,
-    fontSize: 13,
-  },
-  switchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  switchLabel: {
-    fontSize: 14,
-    marginRight: 4,
+    backgroundColor: "#fff",
   },
   emptyContainer: {
     alignItems: "center",
@@ -294,79 +117,17 @@ const styles = StyleSheet.create({
     color: "#888",
     marginTop: 5,
   },
-  rowContainer: {
-    marginHorizontal: 13,
-    marginVertical: 8,
-  },
-  backgroundLabel: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    justifyContent: "center",
-    paddingHorizontal: 10,
-    borderRadius: 15,
-  },
-  completeBackground: {
-    left: 0,
-    backgroundColor: "#A1CEDC",
-  },
-  deleteBackground: {
-    right: 0,
-    backgroundColor: "#ff5c5c",
-  },
-  backgroundLabelText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  taskContainer: {
-    flexDirection: "row",
+  statusChangedContainer: {
+    backgroundColor: "#4CAF50",
+    borderRadius: 8,
+    padding: 10,
     alignItems: "center",
-    padding: 4,
-    borderRadius: 15,
-    borderWidth: 2,
-    borderColor: "#DDD",
-    backgroundColor: "#fff",
+    justifyContent: "center",
+    marginVertical: 10,
   },
-  completedContainer: {
-    opacity: 0.8,
-  },
-  checkmarkContainer: {
-    marginRight: 12,
-  },
-  checkmark: {
-    fontSize: 25,
-    color: "#333",
-  },
-  taskTextContainer: {
-    flex: 1,
-    flexDirection: "column",
-    alignItems: "flex-start",
-  },
-  taskText: {
-    fontSize: 16,
-    color: "#333",
-  },
-  completedTask: {
-    textDecorationLine: "line-through",
-    color: "#999",
-  },
-  taskDate: {
-    fontSize: 12,
-    color: "#aaa",
-    marginTop: 2,
-    textAlign: "right",
-  },
-  deleteButton: {
-    marginLeft: "auto",
-    backgroundColor: "#ff5c5c",
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 4,
-  },
-  deleteButtonText: {
+  statusChangedText: {
     color: "#fff",
-    fontWeight: "600",
+    fontSize: 14,
   },
   taskInputContainer: {
     flexDirection: "row",
@@ -387,6 +148,7 @@ const styles = StyleSheet.create({
     padding: 8,
     width: "90%",
     height: 50,
+    borderRadius: 5,
   },
   addButton: {
     backgroundColor: "#A1CEDC",
@@ -394,20 +156,10 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     justifyContent: "center",
     alignItems: "center",
+    marginRight: 10,
   },
   addButtonText: {
     fontSize: 24,
     color: "#fff",
-  },
-  statusChangedContainer: {
-    backgroundColor: "#4CAF50",
-    borderRadius: 8,
-    padding: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  statusChangedText: {
-    color: "#fff",
-    fontSize: 14,
   },
 });

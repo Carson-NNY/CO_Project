@@ -1,4 +1,4 @@
-# Welcome to your Expo app 👋
+<!-- # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
@@ -47,4 +47,65 @@ To learn more about developing your project with Expo, look at the following res
 Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions. -->
+
+# TaskTracker App
+
+## Setup and Running Instructions
+
+### Prerequisites
+
+- Node.js (v14 or newer)
+- npm or yarn
+- React Native development environment
+
+### Installation
+
+1. Clone the repository
+
+   ```bash
+   git clone https://github.com/yourusername/tasktracker.git
+   cd tasktracker
+   ```
+
+2. Install dependencies
+
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. Start the development server
+
+   ```bash
+   npm start
+   # or
+   yarn start
+   ```
+
+4. Run on a device or simulator
+
+   For iOS:
+
+   ```bash
+   npm run ios
+   # or
+   yarn ios
+   ```
+
+   For Android:
+
+   ```bash
+   npm run android
+   # or
+   yarn android
+   ```
+
+### Troubleshooting
+
+If you encounter any issues during setup:
+
+- Make sure all dependencies are properly installed
+- Reset cache with `npm start -- --reset-cache`
+- Check that your development environment is properly configured

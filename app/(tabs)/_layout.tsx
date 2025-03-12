@@ -18,7 +18,7 @@ export default function TabLayout() {
         screenOptions={{
           tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
           headerShown: false,
-          tabBarButton: HapticTab,
+          tabBarButton: HapticTab, // Custom tab button with haptic feedback
           tabBarBackground: TabBarBackground,
           tabBarStyle: Platform.select({
             ios: {

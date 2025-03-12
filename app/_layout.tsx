@@ -23,6 +23,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (loaded) {
+      // Hide the splash screen once fonts are loaded.
       SplashScreen.hideAsync();
     }
   }, [loaded]);
@@ -34,6 +35,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Stack>
+        {/* Define stack navigation with hidden header for the main tab navigator */}
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
