@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
   Text,
+  Platform,
   StyleSheet,
 } from "react-native";
 import Tasks from "@/components/Task";
@@ -51,12 +52,12 @@ export default function HomeScreen() {
           if (input.trim()) {
             addTask(input);
             setInput("");
-            setStatusChanged("Task added successfully!");
+            setStatusChanged("💪🏻 Task added successfully!");
             setTimeout(() => setStatusChanged(""), 2000);
           }
         };
 
-        // Memoize the header component to avoid unnecessary re-renders
+        // Memoize the header
         const renderHeader = useCallback(() => {
           return (
             <BannerComponent
@@ -158,7 +159,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
-    marginBottom: 84,
+    marginBottom: Platform.select({
+      ios: 84,
+      android: 84,
+      default: 0,
+    }),
     borderRadius: 12,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 4 },
