@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   FlatList,
   TextInput,
@@ -56,23 +56,28 @@ export default function HomeScreen() {
           }
         };
 
+        // Memoize the header component to avoid unnecessary re-renders
+        const renderHeader = useCallback(() => {
+          return (
+            <BannerComponent
+              filterUncompleted={filterUncompleted}
+              setFilterUncompleted={setFilterUncompleted}
+            />
+          );
+        }, [filterUncompleted, setFilterUncompleted]);
+
         return (
           <View style={styles.container}>
             <FlatList
               data={displayedTasks}
               keyExtractor={(item) => item.id}
-              ListHeaderComponent={() => (
-                <BannerComponent
-                  filterUncompleted={filterUncompleted}
-                  setFilterUncompleted={setFilterUncompleted}
-                />
-              )}
+              ListHeaderComponent={renderHeader}
               ListFooterComponent={() =>
                 displayedTasks.length === 0 ? (
                   <View style={styles.emptyContainer}>
                     <Text style={styles.emptyText}>No tasks at the moment</Text>
                     <Text style={styles.emptySubText}>
-                      Add a new task to get started.
+                      Start by adding a new task in the box below.
                     </Text>
                   </View>
                 ) : null
@@ -176,7 +181,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 10,
+    marginRight: 5,
   },
   addButtonText: {
     fontSize: 24,
