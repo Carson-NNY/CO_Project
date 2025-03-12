@@ -20,6 +20,7 @@ const BannerComponent: React.FC<HeaderProps> = ({
       />
       <ThemedView style={styles.titleContainer}>
         <View style={styles.headerRow}>
+          {/* add some instructive hints */}
           <ThemedText type="light" style={styles.headerText}>
             Can also left/right swipe to complete/delete tasks
           </ThemedText>

@@ -1,71 +1,19 @@
-<!-- # Welcome to your Expo app 👋
-
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
-
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions. -->
-
-# TaskTracker App
+# Welcome!!!!
 
 ## Setup and Running Instructions
 
 ### Prerequisites
 
-- Node.js (v14 or newer)
+- Node.js
 - npm or yarn
-- React Native development environment
+- Expo Go app on your mobile device
 
 ### Installation
 
 1. Clone the repository
 
    ```bash
-   git clone https://github.com/yourusername/tasktracker.git
-   cd tasktracker
+   git clone https://github.com/Carson-NNY/CO_Project.git
    ```
 
 2. Install dependencies
@@ -74,38 +22,46 @@ Join our community of developers creating universal apps.
    npm install
    # or
    yarn install
+
+   npm install react-native-gesture-handler
+
    ```
 
-3. Start the development server
+3. Install required gesture handler
 
    ```bash
-   npm start
-   # or
-   yarn start
+   npm install react-native-gesture-handler
+
    ```
 
-4. Run on a device or simulator
-
-   For iOS:
+4. Start the development server
 
    ```bash
-   npm run ios
-   # or
-   yarn ios
+   npx expo start
    ```
 
-   For Android:
+5. Running on a device
+   - press 'i' in the terminal to open on an iOS simulator
 
-   ```bash
-   npm run android
-   # or
-   yarn android
-   ```
+### Introduction
 
-### Troubleshooting
+This app is a task management application that allows users to add, complete, and delete tasks with an intuitive interface. The app provides real-time feedback and multiple ways to interact with tasks.
 
-If you encounter any issues during setup:
+### Key Features
 
-- Make sure all dependencies are properly installed
-- Reset cache with `npm start -- --reset-cache`
-- Check that your development environment is properly configured
+#### Task Management
+
+- **Add Tasks**: Users can add new tasks via the input box at the bottom of the screen by either clicking the "+" icon or pressing the Enter key.
+- **Complete Tasks**: Tasks can be marked as complete by either clicking the circle icon on the left side of the task or performing a right swipe gesture.
+- **Delete Tasks**: Users can remove tasks by clicking the "X" icon on the right side or performing a left swipe gesture.
+
+#### User Interface
+
+- **Date Tracking**: Each task displays the date it was created, helping users track when tasks were added.
+- **Task Filtering**: A switch button allows users to toggle between viewing all tasks and only incomplete tasks. By default, all tasks are shown.
+- **Visual Feedback**: Completed tasks are displayed with a strikethrough effect and in a lighter color to visually differentiate them from active tasks.
+- **Action Notifications**: The app provides immediate feedback with notification messages at the bottom of the screen whenever a task is added, completed, or deleted.
+
+#### Gesture Support
+
+- **Swipe Actions**: The app supports intuitive swipe gestures - right swipe to complete tasks and left swipe to delete them (Requires react-native-gesture-handler dependency).

@@ -27,14 +27,17 @@ const TaskItem: React.FC<TaskItemProps> = ({
 }) => {
   const translateX = useSharedValue(0);
 
+  // Animates task movement based on swipe interaction
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: translateX.value }],
   }));
 
+  // Controls opacity of "Complete" label when swiping right
   const completeLabelStyle = useAnimatedStyle(() => ({
     opacity: translateX.value > 0 ? Math.min(translateX.value / 100, 1) : 0,
   }));
 
+  // Controls opacity of "Delete" label when swiping left
   const deleteLabelStyle = useAnimatedStyle(() => ({
     opacity: translateX.value < 0 ? Math.min(-translateX.value / 100, 1) : 0,
   }));
@@ -45,15 +48,16 @@ const TaskItem: React.FC<TaskItemProps> = ({
     })
     .onEnd((event: PanGestureHandlerEventPayload) => {
       if (event.translationX > 100) {
-        runOnJS(handleCompleteTask)(item.id);
+        runOnJS(handleCompleteTask)(item.id); // Marks task as complete when swiped right
       } else if (event.translationX < -100) {
-        runOnJS(handleDeleteTask)(item.id);
+        runOnJS(handleDeleteTask)(item.id); // Deletes task when swiped left
       }
       translateX.value = withTiming(0);
     });
 
   return (
     <View style={styles.rowContainer}>
+      {/* when swiped right, show the Complete background */}
       <Animated.View
         style={[
           styles.backgroundLabel,
@@ -66,6 +70,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
         </Text>
       </Animated.View>
 
+      {/* when swiped left, show the Delete background */}
       <Animated.View
         style={[
           styles.backgroundLabel,
@@ -84,6 +89,7 @@ const TaskItem: React.FC<TaskItemProps> = ({
             item.completed && styles.completedContainer,
           ]}
         >
+          {/* handle complete/incomplete status */}
           <TouchableOpacity
             style={styles.checkmarkContainer}
             onPress={() => handleCompleteTask(item.id)}

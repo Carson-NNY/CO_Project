@@ -20,7 +20,7 @@ interface TasksProps {
 
 export default function Tasks({ children }: TasksProps) {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split("T")[0]; // make the date in YYYY-MM-DD format
 
   const addTask = (text: string) => {
     const newTask: Task = {
@@ -29,7 +29,7 @@ export default function Tasks({ children }: TasksProps) {
       completed: false,
       date: today,
     };
-    setTasks((prev) => [newTask, ...prev]);
+    setTasks((prev) => [newTask, ...prev]); // add the new task to the top of the list so it's showing first on the screen
   };
 
   const toggleTask = (id: string) => {
