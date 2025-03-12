@@ -6,11 +6,9 @@ import {
   TouchableOpacity,
   View,
   Text,
-  Platform,
   Switch,
 } from "react-native";
 import React, { useState } from "react";
-import { HelloWave } from "@/components/HelloWave";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import Tasks, { Task } from "@/components/Task";
@@ -74,7 +72,9 @@ const TaskItem: React.FC<{
           completeLabelStyle,
         ]}
       >
-        <Text style={styles.backgroundLabelText}>Complete</Text>
+        <Text style={styles.backgroundLabelText}>
+          {item.completed ? "Reopen" : "Complete"}
+        </Text>
       </Animated.View>
       {/* Background label for delete action */}
       <Animated.View
@@ -278,7 +278,6 @@ const styles = StyleSheet.create({
   switchLabel: {
     fontSize: 14,
     marginRight: 4,
-    // color: "#333",
   },
   emptyContainer: {
     alignItems: "center",
@@ -304,7 +303,7 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
     justifyContent: "center",
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     borderRadius: 15,
   },
   completeBackground: {

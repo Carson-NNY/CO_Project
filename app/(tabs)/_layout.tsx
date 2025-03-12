@@ -38,7 +38,6 @@ export default function TabLayout() {
             ),
           }}
         />
-        {/* Other tab screens can be added here */}
       </Tabs>
     </GestureHandlerRootView>
   );
