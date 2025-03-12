@@ -24,12 +24,35 @@ export default function HomeScreen() {
           ? tasks.filter((task) => !task.completed)
           : tasks;
 
+        // handler for completing a task: include a message to show the user
+        const handleCompleteTask = (id) => {
+          // Toggle task completion status
+          toggleTask(id);
+          const task = tasks.find((t) => t.id === id);
+          if (task) {
+            // If the task was already complete, it is now marked as incomplete; otherwise, mark it complete.
+            setStatusChanged(
+              task.completed
+                ? "Task marked as incomplete!"
+                : "🎉 Task completed successfully!"
+            );
+            setTimeout(() => setStatusChanged(""), 2000);
+          }
+        };
+
+        // Define the handler for deleting a task
+        const handleDeleteTask = (id) => {
+          deleteTask(id);
+          setStatusChanged("Task deleted successfully!");
+          setTimeout(() => setStatusChanged(""), 2000);
+        };
+
         const handleAddTask = () => {
           if (input.trim()) {
             addTask(input);
             setInput("");
             setStatusChanged("Task added successfully!");
-            setTimeout(() => setStatusChanged(""), 2000); // Clear message after 2 seconds
+            setTimeout(() => setStatusChanged(""), 2000);
           }
         };
 
@@ -46,7 +69,6 @@ export default function HomeScreen() {
               )}
               ListFooterComponent={() =>
                 displayedTasks.length === 0 ? (
-                  //  only show when there are no tasks
                   <View style={styles.emptyContainer}>
                     <Text style={styles.emptyText}>No tasks at the moment</Text>
                     <Text style={styles.emptySubText}>
@@ -58,20 +80,18 @@ export default function HomeScreen() {
               renderItem={({ item }) => (
                 <TaskItem
                   item={item}
-                  handleCompleteTask={toggleTask}
-                  handleDeleteTask={deleteTask}
+                  handleCompleteTask={handleCompleteTask}
+                  handleDeleteTask={handleDeleteTask}
                 />
               )}
             />
 
-            {/* Status Changed Notification(add/delete/complete tasks) */}
             {statusChanged ? (
               <ThemedView style={styles.statusChangedContainer}>
                 <Text style={styles.statusChangedText}>{statusChanged}</Text>
               </ThemedView>
             ) : null}
 
-            {/* Task Input Box */}
             <ThemedView style={styles.taskInputContainer}>
               <TouchableOpacity
                 onPress={handleAddTask}
