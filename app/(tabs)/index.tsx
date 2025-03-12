@@ -13,6 +13,7 @@ import TaskItem from "@/components/TaskItem";
 import BannerComponent from "@/components/Banner";
 import { ThemedView } from "@/components/ThemedView";
 
+// the main screen of the app
 export default function HomeScreen() {
   const [input, setInput] = useState("");
   const [statusChanged, setStatusChanged] = useState("");
@@ -25,13 +26,12 @@ export default function HomeScreen() {
           ? tasks.filter((task) => !task.completed)
           : tasks;
 
-        // handler for completing a task: include a message to show the user
+        // handlers for new changes(include a message to show the status of the action)
         const handleCompleteTask = (id) => {
           // Toggle task completion status
           toggleTask(id);
           const task = tasks.find((t) => t.id === id);
           if (task) {
-            // If the task was already complete, it is now marked as incomplete; otherwise, mark it complete.
             setStatusChanged(
               task.completed
                 ? "Task marked as incomplete!"
@@ -48,6 +48,7 @@ export default function HomeScreen() {
           setTimeout(() => setStatusChanged(""), 2000);
         };
 
+        // Define the handler for adding a task
         const handleAddTask = () => {
           if (input.trim()) {
             addTask(input);
@@ -57,7 +58,7 @@ export default function HomeScreen() {
           }
         };
 
-        // Memoize the header
+        // Memoize the header to avoid unnecessary re-renders of the image
         const renderHeader = useCallback(() => {
           return (
             <BannerComponent
