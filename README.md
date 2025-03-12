@@ -46,6 +46,7 @@
 ### Introduction
 
 This app is a task management application that allows users to add, complete, and delete tasks with an intuitive interface. The app provides real-time feedback and multiple ways to interact with tasks.
+
 <img width="332" alt="Screenshot 2025-03-11 at 10 36 32 PM" src="https://github.com/user-attachments/assets/eb8b84b0-3373-49c3-abb0-a83f8729762a" />
 
 ### Key Features
